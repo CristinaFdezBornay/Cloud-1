@@ -1,1 +1,10 @@
+- name: 'Updating apt and upgrading packages'
+  apt:
+    update_cache: yes
+    upgrade: yes
 - name: 'Installing Docker'
+  apt:
+    name: docker
+- name: 'Installing Docker-compose'
+  apt:
+    name: docker-compose
