@@ -1,0 +1,44 @@
+- name: 'First Steps Installation'
+  hosts: all
+  remote_user: root
+  tasks:
+    - name: 'Updating apt and upgrading packages'
+      apt:
+        update_cache: yes
+        upgrade: yes
+    - name: 'Installing Docker'
+      apt:
+        name: docker
+    - name: 'Installing Docker-compose'
+      apt:
+        name: docker-compose
+
+- name: 'Set up user AdriCristi✨✨RockStart'
+  hosts: all
+  remote_user: root
+  vars:
+    user_name: 'AdriCristi✨✨RockStart'
+  tasks:
+    - name: Create user {{ user_name }} and add it to docker and sudo groups
+      ansible.builtin.user:
+        name: '{{ user_name }}'
+        groups: docker,sudo
+        shell: /bin/bash
+    - name: Copy SSH keys from root to {{ user_name }}
+      ansible.builtin.copy:
+        src: /root/.ssh/authorized_keys
+        remote_src: yes
+        dest: '/home/{{ user_name }}/.ssh/'
+        owner: '{{ user_name }}'
+        group: '{{ user_name }}'
+        mode: '0600'
+    - name: Modify config file to forbid SSH as root user
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '#PermitRootLogin prohibit-password'
+        line: 'PermitRootLogin No'
+    - name: Restart SSH service to apply changes
+      service:
+        name: ssh
+        state: restarted
+
