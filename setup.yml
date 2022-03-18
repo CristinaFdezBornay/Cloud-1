@@ -23,6 +23,7 @@
       ansible.builtin.user:
         name: '{{ user_name }}'
         groups: docker,sudo
+        password: '$6$wG1pzQcmJUxeIV$Y2wNA365XlhOixi8J4TYCX0CIEH8KlYn1L2TdJpCCqybEj4Eh1.Z3q.X8klq.dLRmC4C0hENKQAGxSVm/oWEC1'
         shell: /bin/bash
     - name: Copy SSH keys from root to {{ user_name }}
       ansible.builtin.copy:

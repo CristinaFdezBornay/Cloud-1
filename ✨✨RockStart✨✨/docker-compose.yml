@@ -1,0 +1,43 @@
+services :
+  # CONTAINER - MYSQL
+  db:
+    build: ./mariadb
+    container_name: wp_mariadb
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+     - "3306:3306"
+    networks:
+      - wp
+
+  # CONTAINER - WORDPRESS
+  wordpress:
+    depends_on:
+      - db
+    build: ./wordpress
+    container_name: wp_wordpress
+    restart: always
+    volumes: ["./content/:/var/www/html"]
+    ports:
+      - "80:80"
+    networks:
+      - wp
+
+  # CONTAINER - PHPMYADMIN
+  phpmyadmin:
+    depends_on:
+      - db
+    build: ./phpmyadmin
+    container_name: wp_phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - wp
+
+networks:
+  wp:
+
+volumes:
+  db_data:
