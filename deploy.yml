@@ -5,14 +5,24 @@
     website: '✨✨RockStart✨✨'
   remote_user: '{{ user_name }}'
   tasks:
+    - name: 'Copy cleanup.sh script to the hosts'
+      ansible.builtin.copy:
+        src: './cleanup.sh'
+        dest: '/home/{{ user_name }}/'
+        owner: '{{ user_name }}'
+        group: '{{ user_name }}'
+        mode: '0755'
+    - name: Cleaning up project files, containers and volumes
+      ansible.builtin.shell: /home/{{ user_name }}/cleanup.sh
+      become: yes
     - name: 'Copy WordPress resources to the hosts'
       ansible.builtin.copy:
         src: './{{ website }}'
         dest: '/home/{{ user_name }}/'
         owner: '{{ user_name }}'
         group: '{{ user_name }}'
-        mode: '0644'
-    - name: 'Build the images for the WoldPress, PHPMyAdmin, and DB'
+        mode: '0777'
+    - name: 'Pull the images for the WordPress, PHPMyAdmin, and DB && build && up'
       community.docker.docker_compose:
         project_src: '/home/{{ user_name }}/{{ website }}'
         build: yes

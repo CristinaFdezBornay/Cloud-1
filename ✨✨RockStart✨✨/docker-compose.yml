@@ -1,20 +1,30 @@
+version: '2.1'
+
 services :
-  # CONTAINER - MYSQL
+# CONTAINER - MYSQL
   db:
     build: ./mariadb
     container_name: wp_mariadb
     restart: always
     volumes:
       - db_data:/var/lib/mysql
-    ports:
-     - "3306:3306"
     networks:
       - wp
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "$MYSQL_USER", "-p$MYSQL_PASSWORD"]
+      timeout: 20s
+      retries: 10
 
-  # CONTAINER - WORDPRESS
+# CONTAINER - WORDPRESS
   wordpress:
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     build: ./wordpress
     container_name: wp_wordpress
     restart: always
@@ -23,8 +33,17 @@ services :
       - "80:80"
     networks:
       - wp
+    environment:
+      - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+      - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+      - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+      - YOUR_DOMAIN_NAME=${YOUR_DOMAIN_NAME}
+      - YOUR_BLOG_TITLE=${YOUR_BLOG_TITLE}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
 
-  # CONTAINER - PHPMYADMIN
+# CONTAINER - PHPMYADMIN
   phpmyadmin:
     depends_on:
       - db
@@ -35,9 +54,15 @@ services :
       - "8080:80"
     networks:
       - wp
+    environment:
+      - PMA_HOST=${PMA_HOST}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
+# NETWORKS
 networks:
   wp:
 
+# VOLUMES
 volumes:
   db_data:
+

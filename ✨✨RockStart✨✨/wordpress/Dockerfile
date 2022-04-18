@@ -1,9 +1,5 @@
 FROM wordpress:latest
 
-ENV WORDPRESS_DB_HOST=db:3306
-ENV WORDPRESS_DB_USER=wordpress
-ENV WORDPRESS_DB_PASSWORD=wordpress
+COPY ./install_rockstart.sh /opt
 
 EXPOSE 80
-
-COPY ./install_rockstart.sh /opt

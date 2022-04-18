@@ -6,12 +6,18 @@
       apt:
         update_cache: yes
         upgrade: yes
-    - name: 'Installing Docker'
+    - name: 'Installing {{ item }}'
       apt:
-        name: docker
-    - name: 'Installing Docker-compose'
-      apt:
-        name: docker-compose
+        name: '{{ item }}'
+      loop:
+        - ufw
+        - docker
+        - docker-compose
+    - name: Download docker-compose v2.3.4
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-linux-x86_64
+        dest: /usr/bin/docker-compose
+        mode: '0755'
 
 - name: 'Set up user AdriCristi✨✨RockStart'
   hosts: all
