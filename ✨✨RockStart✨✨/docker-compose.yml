@@ -25,20 +25,24 @@ services :
     depends_on:
       db:
         condition: service_healthy
-    build: ./wordpress
+    build:
+      context: ./wordpress
+      args:
+        DOMAIN_NAME: "adricristi.duckdns.org"
     container_name: wp_wordpress
     restart: always
     volumes: ["./content/:/var/www/html"]
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - wp
     environment:
       - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
       - WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
       - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-      - YOUR_DOMAIN_NAME=${YOUR_DOMAIN_NAME}
-      - YOUR_BLOG_TITLE=${YOUR_BLOG_TITLE}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - BLOG_TITLE=${BLOG_TITLE}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ADMIN_EMAIL=${ADMIN_EMAIL}

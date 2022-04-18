@@ -3,6 +3,7 @@
   vars:
     user_name: 'AdriCristi✨✨RockStart'
     website: '✨✨RockStart✨✨'
+    dns_name: 'adricristi.duckdns.org'
   remote_user: '{{ user_name }}'
   tasks:
     - name: 'Copy cleanup.sh script to the hosts'
@@ -22,6 +23,14 @@
         owner: '{{ user_name }}'
         group: '{{ user_name }}'
         mode: '0777'
+    - name: 'Initiate SSL certificate request'
+      ansible.builtin.shell: /home/{{ user_name }}/{{ website }}/tools/generate_SSL_certificate_request.sh
+    - name: 'Generate SSL certificate'
+      openssl_certificate:
+        path: /home/{{ user_name }}/{{ website }}/wordpress/ssl/certs/{{ dns_name }}.crt
+        privatekey_path: /home/{{ user_name }}/{{ website }}/wordpress/ssl/private/{{ dns_name }}.pem
+        csr_path: /home/{{ user_name }}/{{ website }}/wordpress/ssl/csr/{{ dns_name }}.csr
+        provider: selfsigned
     - name: 'Pull the images for the WordPress, PHPMyAdmin, and DB && build && up'
       community.docker.docker_compose:
         project_src: '/home/{{ user_name }}/{{ website }}'
@@ -31,3 +40,7 @@
       community.docker.docker_container_exec:
         container: wp_wordpress
         command: /bin/bash /opt/install_rockstart.sh
+    - name: 'Run the script to enable the SSL certificate for {{ website }}'
+      community.docker.docker_container_exec:
+        container: wp_wordpress
+        command: /bin/bash /opt/enable_ssl.sh

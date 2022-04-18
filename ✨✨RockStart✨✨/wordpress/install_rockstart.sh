@@ -16,8 +16,8 @@ mv wp-cli.phar /bin/wp-cli
 wp-cli core install \
     --allow-root \
     --path='/var/www/html/' \
-    --url=$YOUR_DOMAIN_NAME \
-    --title=$YOUR_BLOG_TITLE \
+    --url=$DOMAIN_NAME \
+    --title=$BLOG_TITLE \
     --admin_user=$ADMIN_USERNAME \
     --admin_password=$ADMIN_PASSWORD \
     --admin_email=$ADMIN_EMAIL

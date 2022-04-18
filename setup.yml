@@ -10,7 +10,6 @@
       apt:
         name: '{{ item }}'
       loop:
-        - ufw
         - docker
         - docker-compose
     - name: Download docker-compose v2.3.4
