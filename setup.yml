@@ -1,50 +1,6 @@
-- name: 'First Steps Installation'
-  hosts: all
+- name: Doing everything in one shoot
+  hosts: servers
   remote_user: root
-  tasks:
-    - name: 'Updating apt and upgrading packages'
-      apt:
-        update_cache: yes
-        upgrade: yes
-    - name: 'Installing {{ item }}'
-      apt:
-        name: '{{ item }}'
-      loop:
-        - docker
-        - docker-compose
-    - name: Download docker-compose v2.3.4
-      get_url:
-        url: https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-linux-x86_64
-        dest: /usr/bin/docker-compose
-        mode: '0755'
-
-- name: 'Set up user AdriCristi✨✨RockStart'
-  hosts: all
-  remote_user: root
-  vars:
-    user_name: 'AdriCristi✨✨RockStart'
-  tasks:
-    - name: Create user {{ user_name }} and add it to docker and sudo groups
-      ansible.builtin.user:
-        name: '{{ user_name }}'
-        groups: docker,sudo
-        password: '$6$wG1pzQcmJUxeIV$Y2wNA365XlhOixi8J4TYCX0CIEH8KlYn1L2TdJpCCqybEj4Eh1.Z3q.X8klq.dLRmC4C0hENKQAGxSVm/oWEC1'
-        shell: /bin/bash
-    - name: Copy SSH keys from root to {{ user_name }}
-      ansible.builtin.copy:
-        src: /root/.ssh/authorized_keys
-        remote_src: yes
-        dest: '/home/{{ user_name }}/.ssh/'
-        owner: '{{ user_name }}'
-        group: '{{ user_name }}'
-        mode: '0600'
-    - name: Modify config file to forbid SSH as root user
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '#PermitRootLogin prohibit-password'
-        line: 'PermitRootLogin No'
-    - name: Restart SSH service to apply changes
-      service:
-        name: ssh
-        state: restarted
-
+  roles:
+    - install
+    - config_user

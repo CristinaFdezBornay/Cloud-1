@@ -1,0 +1,14 @@
+---
+- name: 'Pull the images for the WordPress, PHPMyAdmin, and DB && build && up'
+  community.docker.docker_compose:
+    project_src: '/home/{{ user_name }}/{{ website }}'
+    build: yes
+  register: output
+- name: 'Run the script to install {{ website }}'
+  community.docker.docker_container_exec:
+    container: wp_wordpress
+    command: /bin/bash /opt/install_rockstart.sh
+- name: 'Run the script to enable the SSL certificate for {{ website }}'
+  community.docker.docker_container_exec:
+    container: wp_wordpress
+    command: /bin/bash /opt/enable_ssl.sh

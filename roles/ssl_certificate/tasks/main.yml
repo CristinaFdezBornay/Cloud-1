@@ -1,0 +1,9 @@
+---
+- name: 'Initiate SSL certificate request'
+  ansible.builtin.shell: /home/{{ user_name }}/{{ website }}/tools/generate_SSL_certificate_request.sh
+- name: 'Generate SSL certificate'
+  openssl_certificate:
+    path: /home/{{ user_name }}/{{ website }}/wordpress/ssl/certs/{{ dns_name }}.crt
+    privatekey_path: /home/{{ user_name }}/{{ website }}/wordpress/ssl/private/{{ dns_name }}.pem
+    csr_path: /home/{{ user_name }}/{{ website }}/wordpress/ssl/csr/{{ dns_name }}.csr
+    provider: selfsigned

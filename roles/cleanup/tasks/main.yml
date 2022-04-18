@@ -1,0 +1,12 @@
+---
+- name: 'Copy cleanup.sh script to the hosts'
+  ansible.builtin.copy:
+    src: 'cleanup.sh'
+    dest: '/home/{{ user_name }}/'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: '0755'
+- name: Cleaning up project files, containers and volumes
+  ansible.builtin.shell: /home/{{ user_name }}/cleanup.sh
+  become: yes
+ 

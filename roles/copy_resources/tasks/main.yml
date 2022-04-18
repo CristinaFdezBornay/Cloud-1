@@ -1,0 +1,8 @@
+---
+- name: 'Copy WordPress resources to the hosts'
+  ansible.builtin.copy:
+    src: '{{ website }}'
+    dest: '/home/{{ user_name }}/'
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    mode: '0777'
